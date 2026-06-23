@@ -7,7 +7,7 @@
 
 An adaptation of Stanford's STORM method (NAACL 2024) for content creation with three key innovations:
 
-1. **Human Expert Interviews** -- replaces the simulated expert with a real domain practitioner
+1. **Human Expert Interviews** -- adds a real domain practitioner stress-test pass AFTER the 6-8 simulated AI expert interviews (not instead of them)
 2. **Three-Layer Search** -- web search + RAG (personal knowledge management) + session memory
 3. **Model Tiering** -- fast models for high-volume research, strong models for reasoning stages
 
@@ -33,6 +33,8 @@ Based on:
 ## Core Insight
 
 Direct prompting produces shallow, single-perspective questions. STORM solves this by mimicking an investigative journalist: discover multiple perspectives, interview experts, ground every claim in retrievable sources.
+
+**Phase 2 runs two stages:** First, 6-8 simulated AI expert interviews (the original STORM method). Then, a human expert stress-test pass that challenges the AI findings against lived experience. The human does not replace the simulated interviews -- they add a layer on top.
 
 ---
 
