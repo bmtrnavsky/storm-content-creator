@@ -1,18 +1,16 @@
-# STORM Content Creator
+# STORM Content Creator -- Quick Reference
 
-An adaptation of Stanford's STORM method (NAACL 2024) for content creation with three key innovations:
+**This is a methodology reference and Hermes skill specification, not runnable code.**
 
-1. **Human Expert Interviews** -- replaces the simulated expert with a real domain practitioner
-2. **Three-Layer Search** -- web search + RAG (personal knowledge management) + session memory
-3. **Model Tiering** -- fast models for high-volume research, strong models for reasoning stages
+An adaptation of Stanford's STORM method (NAACL 2024) for content creation.
 
 ## Pipeline
 
-Phase 1: Perspective Discovery
-Phase 2: Human Expert Interview (AI researches, human stress-tests)
+Phase 1: Perspective Discovery (AI maps 6-8 expert viewpoints, human approves)
+Phase 2: Human Expert Interview (AI researches via three-layer search, human stress-tests)
 Phase 3: Curate and Outline (living, evolving structure)
-Phase 4: Grounded Writing (every claim sourced, no padding)
-Phase 5: Moderator Pass (audit for source bias and false connections)
+Phase 4: Grounded Writing (every claim sourced, "needs more research" over padding)
+Phase 5: Moderator Pass (audit for source bias and false connections -- highest-leverage role)
 
 ## Model Map
 
@@ -25,9 +23,10 @@ web_search: internet facts and current data
 RAG: personal vault knowledge and cross-domain connections
 session_search: prior thinking (run first to avoid redundancy)
 
-## Usage
+## When to Use
 
-This is a methodology reference. Load it when creating cornerstone content or major research pieces. For regular posts, use the lightweight variant (Phases 1, 3, 5 only).
+Full STORM (all 5 phases): cornerstone content, major research pieces
+Lightweight (Phases 1, 3, 5): regular posts, time-sensitive pieces
 
 ## License
 
