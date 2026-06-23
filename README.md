@@ -9,13 +9,15 @@
 
 Most people use AI incorrectly for research. They give a single prompt like "write a report on this topic" and get back a shallow, single-perspective response that might include hallucinations. The AI has no process for asking good questions, no mechanism for seeking diverse viewpoints, and no way to ground claims in real sources.
 
-**STORM** (Synthesis of Topic Outlines through Retrieval and Multi-perspective Question Asking) is a research method developed at Stanford University's Oval Lab (Shao et al., NAACL 2024). It solves the shallow-research problem by mimicking how an investigative journalist works:
+**STORM** (Synthesis of Topic Outlines through Retrieval and Multi-perspective Question Asking) is a research method developed at Stanford University's Oval Lab (Shao et al., NAACL 2024). It solves the shallow-research problem by using Gen AI to mimic how an investigative journalist works -- but at machine speed and scale:
 
-1. **Discover multiple perspectives** before doing any research -- map out 6-8 distinct expert viewpoints the topic deserves
-2. **Interview experts** -- run multi-turn conversations where an AI interviewer asks sharp questions and an AI expert answers, grounded in real internet sources
-3. **Curate findings** -- organize messy interview logs into a clean, hierarchical outline with every claim mapped to a source
-4. **Write with evidence** -- produce the article section by section, with every factual claim pointing back to a collected source
-5. **Audit for blind spots** -- a moderator agent sweeps for unknown unknowns, source bias, and false connections
+1. **Gen AI discovers multiple perspectives** -- the AI maps out 6-8 distinct expert viewpoints the topic deserves, before any research begins
+2. **Gen AI runs simulated expert interviews** -- the AI plays dual roles (interviewer and expert) in 6-8 separate multi-turn conversations, each grounded in real internet sources found via web search
+3. **Gen AI curates findings** -- the AI organizes messy interview logs into a clean, hierarchical outline with every claim mapped to a source
+4. **Gen AI writes with evidence** -- the AI produces the article section by section, with every factual claim pointing back to a collected source
+5. **Gen AI audits for blind spots** -- a moderator agent sweeps for unknown unknowns, source bias, and false connections
+
+The human expert does NOT do the research. The human comes in at two defined checkpoints: first to approve the AI-generated perspectives before interviews begin, then after the AI has synthesized all findings to stress-test them against lived experience. The human adds nuance, catches framing errors, and flags angles the AI missed. The AI does the heavy lifting.
 
 The result: research reports with comparable breadth and depth to Wikipedia articles, but grounded in the practitioner's own expertise and experience.
 
@@ -23,9 +25,9 @@ The result: research reports with comparable breadth and depth to Wikipedia arti
 
 This is an adaptation of Stanford's STORM method for content creation with three key innovations:
 
-1. **Human Expert Interviews** -- adds a real domain practitioner stress-test pass AFTER the 6-8 simulated AI expert interviews (not instead of them). The human catches framing errors, adds nuance from lived experience, and stress-tests conclusions against reality. No published STORM implementation does this.
-2. **Three-Layer Search** -- web search + RAG (personal knowledge management) + session memory. The RAG layer surfaces cross-domain connections from prior notes and accumulated expertise, making the output distinctly personal rather than generic AI content.
-3. **Model Tiering** -- fast models for high-volume research stages, strong models for reasoning stages. Manages cost without sacrificing quality where it matters.
+1. **Human Expert Stress-Test** -- after Gen AI completes all 6-8 simulated interviews and synthesizes the findings, a real domain practitioner reviews and challenges the AI's conclusions. This is additive, not a replacement. The AI does the research. The human stress-tests it. No published STORM implementation includes this step.
+2. **Three-Layer Search** -- Gen AI searches across three layers during interviews: web search for current facts, RAG (personal knowledge management) for cross-domain connections from prior notes, and session memory for the human's own prior thinking. The RAG layer makes the output distinctly personal rather than generic AI content.
+3. **Model Tiering** -- fast, capable models for high-volume AI research stages (6-8 interviews), stronger models for reasoning stages (outline, writing, moderator). Manages cost without sacrificing quality where it matters.
 
 Based on:
 - [STORM Paper](https://arxiv.org/abs/2402.14207) -- Shao et al., Stanford Oval Lab, NAACL 2024
