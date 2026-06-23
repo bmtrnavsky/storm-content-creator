@@ -3,6 +3,8 @@
 **Version:** 0.1.0
 **License:** MIT
 
+**This is a methodology reference and Hermes skill specification, not a runnable code implementation.** It provides operational instructions for AI agents to execute the five-phase STORM research pipeline with human-in-the-loop expert interviews.
+
 An adaptation of Stanford's STORM method (NAACL 2024) for content creation with three key innovations:
 
 1. **Human Expert Interviews** -- replaces the simulated expert with a real domain practitioner
@@ -25,7 +27,6 @@ Based on:
 - [When to Use Full vs Lightweight](#when-to-use-full-vs-lightweight)
 - [Evaluation Data](#evaluation-data)
 - [Known Failure Modes](#known-failure-modes)
-- [Version History](#version-history)
 
 ---
 
@@ -67,10 +68,10 @@ Direct prompting produces shallow, single-perspective questions. STORM solves th
 
 **Process:**
 
-1. AI researches the perspective using all three search layers
-2. AI presents findings as structured interview: "Research says X. From your experience, does this track? What is missing? What is wrong?"
-3. Expert responds. AI follows up, sharpens, challenges.
-4. Repeat for each perspective.
+1. Run 6-8 simulated expert interviews (one per perspective). Each is a multi-turn dialogue where an AI interviewer asks questions and an AI expert answers, grounded in real sources from web search. This is the original STORM method.
+2. After simulated interviews are complete, run a Brad interview pass. AI presents the synthesized findings from all simulated interviews to Brad as structured interview: "Research says X. From your experience, does this track? What is missing? What is wrong?"
+3. Brad responds. AI follows up, sharpens, challenges. Brad can add entirely new angles the simulated interviews missed.
+4. Repeat the Brad interview pass for each perspective where Brad has relevant domain experience.
 
 **Hard rule:** If a claim cannot be backed by a real source AND the expert cannot confirm from experience, output `unverified`. Fabrication is strictly forbidden.
 
@@ -108,6 +109,8 @@ Direct prompting produces shallow, single-perspective questions. STORM solves th
 
 **Task:** Blind spot sweep for unknown unknowns -- critical questions no one thought to ask.
 
+**Why this is the highest-leverage role:** The Co-STORM evaluation found that removing the moderator hurts performance more than reducing the number of experts. Single expert + moderator beats multiple experts without a moderator. This is the most counterintuitive, high-leverage finding in the system.
+
 **Red-team constraints:** Audit for two named failure modes:
 
 1. **Source bias transfer** -- leaning too heavily on a single biased source
@@ -116,8 +119,6 @@ Direct prompting produces shallow, single-perspective questions. STORM solves th
 **Output:** Flagged errors fixed before final output.
 
 **Human checkpoint:** Present moderator findings to the expert for review. Expert approves fixes or adds direction.
-
-**Why this matters most:** The Co-STORM evaluation found that removing the moderator hurts performance more than reducing the number of experts. Single expert + moderator beats multiple experts without a moderator. The moderator is the highest-leverage role in the system.
 
 ---
 
@@ -134,9 +135,9 @@ The STORM reference implementation supports different models for different stage
 | Phase 5: Moderator/Auditor | Owl Alpha | Highest-leverage role; needs real reasoning strength |
 | Final Polish | DeepSeek 4 Flash | Mechanical task (dedup, summary); speed only |
 
-**Fallback:** If the primary model hits a reasoning ceiling on the moderator role for complex cross-domain topics, escalate to a stronger model. Do not escalate as a reflex.
+**Model terminology:** Owl Alpha, Sonnet 4.6, and DeepSeek 4 Flash are specific model identifiers in the Hermes/OpenRouter ecosystem. Owl Alpha = Sonnet 4.6 capability level. DeepSeek 4 Flash = Gemini Flash capability level or better, significantly faster.
 
-**Note:** The fast model is used for high-volume stages to manage rate limits and cost, not because it is more capable than the primary model.
+**Fallback:** If the primary model hits a reasoning ceiling on the moderator role for complex cross-domain topics, escalate to a stronger model. Do not escalate as a reflex.
 
 ---
 
@@ -178,9 +179,11 @@ The STORM reference implementation supports different models for different stage
 | Criteria | Full | Lightweight |
 |----------|------|-------------|
 | Pillar-level piece | Yes | No |
-| Crosses multiple domains | Yes | No |
+| Crosses multiple domains | Yes (but see note) | No |
 | Time-sensitive / news-driven | No | Yes |
 | Expert available for checkpoints | Yes | No |
+
+**Note on "crosses multiple domains":** Almost every S2BI post touches DC operations + BI + technology + strategy. That is the nature of Brad's cross-domain expertise. Apply this criterion pragmatically: if the domains are tightly integrated in one lived experience, it is still one domain. Use full STORM when the topic requires genuinely distinct domains that the expert has NOT connected before.
 
 ---
 
@@ -212,11 +215,3 @@ From the Co-STORM paper:
 2. **Over-association of unrelated facts** -- connecting things that should not be connected
 
 Both should be named checks in any moderator/auditor phase.
-
----
-
-## Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| 0.1.0 | 2026-06-23 | Initial release. Five-phase pipeline with human expert interviews, three-layer search, model tiering, Co-STORM evaluation data. |
