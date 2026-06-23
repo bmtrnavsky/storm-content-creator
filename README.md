@@ -13,11 +13,13 @@ Most people use AI incorrectly for research. They give a single prompt like "wri
 
 1. **Gen AI discovers multiple perspectives** -- the AI maps out 6-8 distinct expert viewpoints the topic deserves, before any research begins
 2. **Gen AI runs simulated expert interviews** -- the AI plays dual roles (interviewer and expert) in 6-8 separate multi-turn conversations, each grounded in real internet sources found via web search
-3. **Gen AI curates findings** -- the AI organizes messy interview logs into a clean, hierarchical outline with every claim mapped to a source
-4. **Gen AI writes with evidence** -- the AI produces the article section by section, with every factual claim pointing back to a collected source
-5. **Gen AI audits for blind spots** -- a moderator agent sweeps for unknown unknowns, source bias, and false connections
+3. **Gen AI synthesizes findings** -- after all simulated interviews are complete, the AI presents a structured brief to the human expert: "Research says X. From your experience, does this track? What is missing? What is wrong?"
+4. **Human expert stress-tests** -- the human challenges the AI's conclusions, adds angles the AI missed, and corrects framing errors rooted in lived experience. The AI follows up, sharpens, and challenges back.
+5. **Gen AI curates findings** -- the AI organizes all interview logs and human input into a clean, hierarchical outline with every claim mapped to a source
+6. **Gen AI writes with evidence** -- the AI produces the article section by section, with every factual claim pointing back to a collected source
+7. **Gen AI audits for blind spots** -- a moderator agent sweeps for unknown unknowns, source bias, and false connections
 
-The human expert does NOT do the research. The human comes in at two defined checkpoints: first to approve the AI-generated perspectives before interviews begin, then after the AI has synthesized all findings to stress-test them against lived experience. The human adds nuance, catches framing errors, and flags angles the AI missed. The AI does the heavy lifting.
+**The human expert does not discover perspectives, run interviews, or write the report.** Gen AI handles all of that. The human comes in at defined checkpoints to challenge the conclusions against lived experience. The human adds nuance, catches framing errors, and flags angles the AI missed. The AI does the heavy lifting. The human catches what the AI cannot: framing errors rooted in lived experience, domain-specific nuance that never makes it into published sources, and conclusions that are technically correct but practically wrong.
 
 The result: research reports with comparable breadth and depth to Wikipedia articles, but grounded in the practitioner's own expertise and experience.
 
