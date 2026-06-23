@@ -3,13 +3,29 @@
 **Version:** 0.1.0
 **License:** MIT
 
-**This is a methodology reference and Hermes skill specification, not a runnable code implementation.** It provides operational instructions for AI agents to execute the five-phase STORM research pipeline with human-in-the-loop expert interviews.
+**This is a methodology reference and AI agent skill specification, not a runnable code implementation.** It provides operational instructions for executing the five-phase STORM research pipeline with human-in-the-loop expert interviews.
 
-An adaptation of Stanford's STORM method (NAACL 2024) for content creation with three key innovations:
+## What Is STORM?
 
-1. **Human Expert Interviews** -- adds a real domain practitioner stress-test pass AFTER the 6-8 simulated AI expert interviews (not instead of them)
-2. **Three-Layer Search** -- web search + RAG (personal knowledge management) + session memory
-3. **Model Tiering** -- fast models for high-volume research, strong models for reasoning stages
+Most people use AI incorrectly for research. They give a single prompt like "write a report on this topic" and get back a shallow, single-perspective response that might include hallucinations. The AI has no process for asking good questions, no mechanism for seeking diverse viewpoints, and no way to ground claims in real sources.
+
+**STORM** (Synthesis of Topic Outlines through Retrieval and Multi-perspective Question Asking) is a research method developed at Stanford University's Oval Lab (Shao et al., NAACL 2024). It solves the shallow-research problem by mimicking how an investigative journalist works:
+
+1. **Discover multiple perspectives** before doing any research -- map out 6-8 distinct expert viewpoints the topic deserves
+2. **Interview experts** -- run multi-turn conversations where an AI interviewer asks sharp questions and an AI expert answers, grounded in real internet sources
+3. **Curate findings** -- organize messy interview logs into a clean, hierarchical outline with every claim mapped to a source
+4. **Write with evidence** -- produce the article section by section, with every factual claim pointing back to a collected source
+5. **Audit for blind spots** -- a moderator agent sweeps for unknown unknowns, source bias, and false connections
+
+The result: research reports with comparable breadth and depth to Wikipedia articles, but grounded in the practitioner's own expertise and experience.
+
+## What This Repo Adds
+
+This is an adaptation of Stanford's STORM method for content creation with three key innovations:
+
+1. **Human Expert Interviews** -- adds a real domain practitioner stress-test pass AFTER the 6-8 simulated AI expert interviews (not instead of them). The human catches framing errors, adds nuance from lived experience, and stress-tests conclusions against reality. No published STORM implementation does this.
+2. **Three-Layer Search** -- web search + RAG (personal knowledge management) + session memory. The RAG layer surfaces cross-domain connections from prior notes and accumulated expertise, making the output distinctly personal rather than generic AI content.
+3. **Model Tiering** -- fast models for high-volume research stages, strong models for reasoning stages. Manages cost without sacrificing quality where it matters.
 
 Based on:
 - [STORM Paper](https://arxiv.org/abs/2402.14207) -- Shao et al., Stanford Oval Lab, NAACL 2024
