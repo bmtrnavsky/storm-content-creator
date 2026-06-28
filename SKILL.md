@@ -1,13 +1,9 @@
----
-name: storm-research
-version: 0.1.0
-description: "STORM research method (Stanford, NAACL 2024) adapted for content creation. Five-phase pipeline: perspective discovery, expert interview (simulated + human), curation/outline, grounded writing, moderator audit. Use for cornerstone content, research pieces, or any task requiring deep multi-perspective research. Works inside the S2BI content pipeline or standalone for general research."
-author: Brad Trnavsky
-license: MIT
-metadata:
-  hermes:
-    tags: [research, content-creation, storm, methodology, multi-perspective]
----
+# STORM Research Method
+
+**Version:** 0.2.0
+**Author:** Brad Trnavsky
+**License:** MIT
+**Description:** STORM research method (Stanford, NAACL 2024) adapted for content creation. Five-phase pipeline: perspective discovery, expert interview (simulated + human), curation/outline, grounded writing, moderator audit. Includes STORM-Light (single-model) and STORM-Full (multi-model) modes.
 
 # STORM Research Method
 
@@ -15,6 +11,7 @@ metadata:
 
 Based on Stanford's STORM (Shao et al., NAACL 2024) and Co-STORM (EMNLP 2024).
 Reference: github.com/stanford-oval/storm
+This adaptation: github.com/bmtrnavsky/storm-content-creator
 
 ## When to Use
 
@@ -26,38 +23,23 @@ Reference: github.com/stanford-oval/storm
 
 **Do NOT use for:**
 - Simple fact-checking or quick lookups
-- Time-sensitive or news-driven content (use lightweight variant)
+- Time-sensitive or news-driven content (use STORM-Light)
 - Tasks where the user just wants a fast answer
 
 ## Two Modes
 
-### Full STORM (all 5 phases)
-For cornerstone content, major research, definitive guides. Requires human expert availability for Phase 2 and Phase 5 checkpoints.
+### STORM-Full (Multi-Model Research)
+For pillar-level content, ambitious claims, cross-domain synthesis, or whenever genuine perspective diversity matters more than speed. Phase 2 runs 8 independent research perspectives in parallel, each anchored to its own model instance. Requires human expert availability for Phase 2 and Phase 5 checkpoints. Higher token cost in Phase 2.
 
-### Lightweight STORM (Phases 1, 3, 5 only)
-For regular posts, time-sensitive pieces, or when no human expert is available. Skips the interview phase.
+### STORM-Light (Single-Model Research)
+For routine blog posts, time-sensitive pieces, or topics within well-established domain knowledge. One model role-plays all perspectives sequentially. Faster, cheaper, sufficient for most content.
 
 **Decision criteria:**
 - Pillar-level piece? -> Full
 - Crosses genuinely distinct domains the expert has NOT connected before? -> Full
-- Time-sensitive or news-driven? -> Lightweight
-- Human expert available for checkpoints? -> Full. If not -> Lightweight.
-
-## Model Assignment
-
-| Pipeline Stage | Model | Rationale |
-|----------------|-------|-----------|
-| Phase 1: Perspective Discovery | DeepSeek 4 Flash | Fast, strong at structured research output |
-| Phase 2: Simulated Interview | DeepSeek 4 Flash | High-volume token burn; fast and capable |
-| Phase 2: Human Expert Interview | Owl Alpha | Needs to synthesize across all interviews and present clearly |
-| Phase 3: Curate and Outline | Owl Alpha | Structured output, reliability |
-| Phase 4: Grounded Writing | Owl Alpha | Voice matching for human hand-edit pass |
-| Phase 5: Moderator/Auditor | Owl Alpha | Highest-leverage role; needs real reasoning strength |
-| Final Polish | DeepSeek 4 Flash | Mechanical task (dedup, summary); speed only |
-
-**Fallback:** If Owl Alpha hits a reasoning ceiling on the moderator role, escalate to a stronger model like Sonnet 4.6. Do not escalate as a reflex.
-
-**Model terminology:** Owl Alpha is free on Openrouter and presumed to be a frontier Alpha model. Substitute with the frontier model of your choice, Opus, Sonnet, Gemini Pro or Flash, Deepseek V4 Pro, etc...
+- Time-sensitive or news-driven? -> Light
+- Human expert available for checkpoints? -> Full. If not -> Light.
+- Is the claim ambitious enough that single-model echo chamber is a real risk? -> Light for established territory. Full for unexplored ground.
 
 ## The Five-Phase Pipeline
 
@@ -93,18 +75,22 @@ Perspective [N]: [Persona Name]
 
 **Task:** Run a multi-turn dialogue for each perspective (6-8 total).
 
-**Search stack (use all three layers for each interview):**
+**Search stack (three layers for each interview):**
 
 | Layer | Tool | When to Use |
 |-------|------|-------------|
-| Web Search | `web_search` | Every interview -- ground answers in real sources |
-| RAG | pgvector hybrid search | Surface cross-domain connections from prior knowledge |
-| Session Memory | `session_search` | Run BEFORE fresh research to avoid redundancy |
+| Web Search | Any web search tool | Every interview -- ground answers in real sources |
+| RAG / Knowledge Store | Vector + full-text search | Surface cross-domain connections from prior knowledge |
+| Session / Memory Search | Prior conversation search | Run BEFORE fresh research to avoid redundancy |
+
+**STORM-Light process:** One model simulates all perspectives sequentially. Ground each persona in real web search. Capture sources per claim.
+
+**STORM-Full process:** Dispatch 8 independent research runs in parallel. Each run owns ONE perspective and its own model instance (mix at least 2 different models across the 8 runs -- do not use the same model for all). Each run outputs a structured report with cited sources.
 
 **Process for each perspective:**
-1. Run session_search first: "what has the human already written/thought about [concept]"
-2. Run web_search for the specific questions from this perspective
-3. Run RAG to surface vault connections
+1. Search prior knowledge first: "what has the human already written/thought about [concept]"
+2. Run web search for the specific questions from this perspective
+3. Run knowledge store search to surface cross-domain connections
 4. Conduct a multi-turn interview (3-5 turns per perspective):
    - Interviewer asks a sharp question from the perspective
    - Expert answers using real sources found via search
@@ -125,7 +111,7 @@ Key findings: [3-5 bullet points]
 Sources: [list of URLs/references]
 ```
 
-#### Stage B: Human Expert Interview (Brad Modification)
+#### Stage B: Human Expert Interview (Key Adaptation)
 
 **Role:** Interviewer (AI) + Expert (Human)
 
@@ -204,16 +190,14 @@ Sources: [list of URLs/references]
 
 ## Pipeline Integration
 
-### Inside S2BI Content Pipeline
-- This skill replaces/enhances Phases 1-3 of the content pipeline
-- Output feeds into the existing Phase 4 (Execution & Publishing)
-- Artifacts go to `30 Hermes Pipeline/Active/[card-id]/`
-- Follow the content-pipeline skill for artifact naming and gate procedures
+### Inside a Content Pipeline
+- This skill replaces/enhances the research phases of a content pipeline
+- Output feeds into the writing and publishing phases
+- Follow your pipeline skill for artifact naming and gate procedures
 
 ### Standalone (Outside Pipeline)
 - Run all 5 phases in sequence
 - Output a complete research document
-- No Kanban or pipeline artifact naming required
 - Deliver the final document directly to the user
 
 ## Known Failure Modes
@@ -223,20 +207,44 @@ Sources: [list of URLs/references]
 
 Both are explicitly flagged in the Co-STORM paper and must be named checks in Phase 5.
 
+## Model Assignment (Recommended)
+
+| Pipeline Stage | Light Mode | Full Mode | Rationale |
+|----------------|-----------|-----------|-----------|
+| Phase 1: Perspective Discovery | Fast model | Fast model | Structured output, speed |
+| Phase 2: Simulated Interview | Fast model (single, sequential) | 8 independent runs, mixed models | Light: speed. Full: diversity |
+| Phase 3: Curate and Outline | Strong model | Strong model | Structured, reliable |
+| Phase 4: Grounded Writing | Strong model | Strong model | Voice matching for hand-edit |
+| Phase 5: Moderator/Auditor | Strong model | Strong model | Highest-leverage role |
+| Final Polish | Fast model | Fast model | Mechanical task; speed only |
+
+**Full mode model diversity rule:** In Phase 2, do not assign the same model to all 8 perspectives. Mix at least 2 different models across the 8 runs. Different training data, different biases, different blind spots.
+
+**Fallback:** If the strong model hits a reasoning ceiling on the moderator role, escalate to a stronger model. Do not escalate as a reflex.
+
 ## Search Stack Detail
 
-### web_search
+### Web Search
 - Use for: broad internet facts, current data, specific claim verification
 - Query formulation: use synthesis-forcing queries ("what does research say about X") not just topic queries ("X")
 - Run during every simulated interview to ground answers in real sources
 
-### RAG (pgvector)
-- Use for: surfacing vault knowledge, cross-domain connections from prior notes
+### RAG / Knowledge Store
+- Use for: surfacing prior knowledge, cross-domain connections from existing notes
 - Query during interviews: "what has the human already written about [concept]"
 - This is the differentiator -- makes output distinctly personal rather than generic AI content
-- Supports both hybrid (vector + full-text) and semantic-only search
 
-### session_search
+### Session / Memory Search
 - Use for: checking prior thinking on related topics
 - Run BEFORE fresh research to avoid redundancy
 - No API cost, often overlooked
+
+## License
+
+MIT
+
+## Credits
+
+Based on STORM by Shao et al., Stanford Oval Lab, NAACL 2024.
+Co-STORM collaborative extension, EMNLP 2024.
+Reference implementation: github.com/stanford-oval/storm
