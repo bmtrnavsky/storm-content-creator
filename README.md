@@ -1,14 +1,14 @@
 # STORM Content Creator
 
-A multi-model AI research pipeline based on Stanford's STORM methodology -- research any topic deeply using 4 parallel AI models with OpenRouter Fusion, producing structured long-form documents with verified citations.
+A practitioner-built implementation of Stanford's STORM methodology using OpenRouter Fusion to research topics with 4 parallel AI models per perspective.
 
 Based on: Shao et al., NAACL 2024 -- "Assisting in Writing Wikipedia-like Articles from Scratch with Large Language Models"
 
 ## What is STORM?
 
-STORM (Synthesis of Topic Outlines through Retrieval and Multi-perspective question asking) is a research pipeline from Stanford's Oval Lab that mimics how investigative journalists work: discover multiple expert perspectives, interview each one, ground every claim in retrievable sources, then synthesize into a comprehensive article.
+STORM (Synthesis of Topic Outlines through Retrieval and Multi-perspective question asking) is a research pipeline from Stanford's Oval Lab that mimics how investigative journalists work: discover multiple expert perspectives, interview each one, ground every claim in retrievable sources, then synthesize into comprehensive research output.
 
-Instead of asking one LLM to write from a generic prompt, STORM discovers the distinct viewpoints a topic deserves, researches each independently, and reconciles disagreements through a moderator pass. The result is content with genuine depth and breadth that no single-model prompt can match.
+Instead of asking one LLM to write from a generic prompt, STORM discovers the distinct viewpoints a topic deserves, researches each independently, and reconciles disagreements through a moderator pass. The result is research depth that no single-model prompt can match.
 
 ## What Makes This Implementation Different -- Fusion Architecture
 
@@ -30,7 +30,7 @@ Per OpenRouter's research, approximately 75% of Fusion's quality lift comes from
 ## How It Works
 
 ### Phase 1: Perspective Discovery
-A senior research strategist maps 4-10 distinct expert perspectives the topic deserves. Each persona gets a name, what they care about, and the sharpest questions they would ask. Brad reviews and approves perspectives before proceeding.
+A senior research strategist maps 4-10 distinct expert perspectives the topic deserves. Each persona gets a name, what they care about, and the sharpest questions they would ask. The researcher reviews and approves perspectives before proceeding.
 
 ### Phase 2: Expert Interview (Fusion Architecture)
 Each POV is researched by 4 models simultaneously, fused into one report by DeepSeek V4 Flash. A single search pass per POV caches retrieved sources (web search, web extraction, Perplexity, RAG). Subagents run in parallel batches of 3.
@@ -39,10 +39,10 @@ Each POV is researched by 4 models simultaneously, fused into one report by Deep
 Organize interview logs into a clean hierarchical outline. Sections grouped by theme, duplicates removed, contradictions explicitly flagged. Every section mapped to specific sources.
 
 ### Phase 4: Grounded Writing
-Write section by section following the outline. Every claim points back to a collected source. Thin sections get "needs more research" instead of padding.
+Write section by section following the outline. Every claim points back to a collected source. Thin sections get "needs more research" instead of padding. Suitable for academic research, market analysis, technical documentation, investigative journalism, and long-form research output.
 
 ### Phase 5: Moderator Pass
-Independent blind-spot sweep for unknown unknowns. Co-STORM evaluation found that removing the moderator hurts performance more than reducing the number of experts. Brad reviews moderator findings as the final checkpoint.
+Independent blind-spot sweep for unknown unknowns. Co-STORM evaluation found that removing the moderator hurts performance more than reducing the number of experts. The researcher reviews moderator findings as the final checkpoint.
 
 ## Quick Start
 
@@ -65,12 +65,16 @@ Run the pipeline through Hermes Agent with the `content-pipeline` skill loaded.
 
 | Pipeline Stage | Model | Rationale |
 |----------------|-------|-----------|
-| Phase 1: Perspective Discovery | cos-heavy (DeepSeek V4 Flash) | Strongest fast model, structured research output |
+| Phase 1: Perspective Discovery | Owl Alpha | Frontier reasoning, structured research output |
 | Phase 2: Expert Interview | Fusion: 4 models fused by DeepSeek V4 Flash | 4-model diversity per POV, single fuser cost |
 | Phase 3: Curate and Outline | Owl Alpha | Frontier tier, structured output, reliability |
-| Phase 4: Grounded Writing | Owl Alpha | Frontier tier, voice matching for Brad's hand-edit pass |
-| Phase 5: Moderator/Auditor | Owl Alpha | Highest-leavier role; needs frontier reasoning strength |
-| Final Polish | cos-fast (Gemini Flash Lite) | Mechanical task; speed only |
+| Phase 4: Grounded Writing | Owl Alpha | Frontier tier, voice consistency for researcher's final review |
+| Phase 5: Moderator/Auditor | Owl Alpha | Highest-leverage role; needs frontier reasoning strength |
+| Final Polish | Gemini 2.5 Flash Lite | Mechanical task; speed only |
+
+### Model Hierarchy (strongest to weakest)
+
+Owl Alpha (frontier) > DeepSeek V4 Flash > Nemotron 3 Ultra (free MoE) > gpt-oss-120b (free) > Gemma 4 31B (free) > Gemini 2.5 Flash > Gemini 2.5 Flash Lite
 
 ### Fusion Panel per POV
 
@@ -100,9 +104,9 @@ All tiers use the same Fusion panel. The only variable is how many perspectives 
 
 | Tier | POVs | Sub-agent Calls | When to Use |
 |------|------|-----------------|-------------|
-| Light | 4-5 | 4-5 | Routine content, time-sensitive, established territory |
-| Mid | 6-8 | 6-8 | Ambitious posts, cross-domain, echo chamber risk |
-| Full | 8-10 | 8-10 | Pillar content, academic depth, definitive guides |
+| Light | 4-5 | 4-5 | Routine research, time-sensitive, established territory |
+| Mid | 6-8 | 6-8 | Ambitious research, cross-domain, echo chamber risk |
+| Full | 8-10 | 8-10 | Pillar research, academic depth, definitive reports |
 
 ## Implementation Notes
 
@@ -110,7 +114,7 @@ All tiers use the same Fusion panel. The only variable is how many perspectives 
 - LangGraph port: [braincrew-lab/STORM-Research-Assistant](https://github.com/braincrew-lab/STORM-Research-Assistant)
 - This repo: [bmtrnavsky/storm-content-creator](https://github.com/bmtrnavsky/storm-content-creator)
 - For S2BI, web_search replaces Tavily/ArXiv as the primary retrieval tool
-- Before creating any content card, run the Pillar Test to ensure brand alignment
+- Before creating any research output, run the Pillar Test to ensure brand alignment
 
 ## License
 
