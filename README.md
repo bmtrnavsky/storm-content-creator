@@ -96,6 +96,8 @@ Tested against RAG chatbots and STORM+QA across seven metrics (Co-STORM human ev
 | Report Novelty | 2.44 | 2.50 | **3.05** |
 | Unique URLs | 2.94 | 2.89 | **6.04** |
 
+*Benchmark data from Shao et al., NAACL 2024. Results reflect the original Co-STORM evaluation, not this specific implementation.*
+
 Key finding: Removing the moderator hurts performance more than reducing the number of experts.
 
 ## Tiers
