@@ -61,7 +61,7 @@
   "cost_usd": 0.84,
   "outcome": "complete",
   "povs_flagged": ["pov-05-safety"],
-  "researcher_checkpoints": ["phase1", "phase5"]
+  "researcher_checkpoints": ["phase1", "phase2", "phase5"]
 }
 ```
 
@@ -81,6 +81,9 @@
 - On pipeline start: scan for run_id checkpoints, build a completion set
 - Dispatch only POVs not in the completion set
 - On subagent completion: write checkpoint atomically
+
+**Critical rule: DLQ + Checkpoint coupling**
+If a POV hits the Dead Letter Queue and exhausts its retries, the Checkpointer MUST save that POV's status as `failed`. If left blank or marked as pending, pipeline restarts will trigger an infinite retry loop -- the Checkpointer sees no completion, dispatches again, the subagent fails again, the DLQ catches it again, repeat. Always write `status: "failed"` on terminal DLQ exhaustion before the next run begins.
 
 **Benefit:** Partial batch failures are recoverable. No wasted compute on completed POVs. Enables mid-run interruption and resumption. Critical for long-running Full tier (10 POVs, potentially 10+ minutes of subagent work).
 
