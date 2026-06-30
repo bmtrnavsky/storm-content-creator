@@ -12,7 +12,7 @@ Instead of asking one LLM to write from a generic prompt, STORM discovers the di
 
 ## What Makes This Implementation Different -- Fusion Architecture
 
-Every published STORM implementation uses a single model per perspective. The "perspective diversity" comes from a persona prompt -- you ask one model to roleplay different viewpoints. The model's training biases, knowledge gaps, and reasoning patterns stay constant across every perspective. Genuine disagreement between viewpoints is largely theatrical.
+Every published STORM implementation uses a single model per perspective. The "perspective diversity" comes from a persona prompt -- you ask one model to roleplay different viewpoints. The model's training biases, knowledge gaps, and reasoning patterns stay constant across every perspective. **Genuine disagreement between viewpoints is largely theatrical.**
 
 This implementation uses **OpenRouter Fusion** to run 4 genuinely different models per perspective:
 
@@ -34,6 +34,14 @@ A senior research strategist maps 4-10 distinct expert perspectives the topic de
 
 ### Phase 2: Expert Interview (Fusion Architecture)
 Each POV is researched by 4 models simultaneously, fused into one report by DeepSeek V4 Flash. A single search pass per POV caches retrieved sources (web search, web extraction, Perplexity, RAG). Subagents run in parallel batches of 3.
+
+### Phase 2.5: The Reality Check (Human in the Loop)
+
+Standard STORM relies purely on simulated experts. We added a mandatory practitioner checkpoint. Once the Fusion panel synthesizes the data, the AI interviews a human expert: "Research says X. From your experience in this domain, does this track? What is missing?"
+
+If a claim cannot be backed by a source or the human's lived experience, it gets cut. Reality beats theory.
+
+No published STORM implementation replaces the simulated expert with a real human practitioner. This is the differentiator.
 
 ### Phase 3: Curate and Outline
 Organize interview logs into a clean hierarchical outline. Sections grouped by theme, duplicates removed, contradictions explicitly flagged. Every section mapped to specific sources.
@@ -104,9 +112,9 @@ All tiers use the same Fusion panel. The only variable is how many perspectives 
 
 | Tier | POVs | Sub-agent Calls | When to Use |
 |------|------|-----------------|-------------|
-| Light | 4-5 | 4-5 | Routine research, time-sensitive, established territory |
-| Mid | 6-8 | 6-8 | Ambitious research, cross-domain, echo chamber risk |
-| Full | 8-10 | 8-10 | Pillar research, academic depth, definitive reports |
+| Light | 4-5 | 4-5 | Routine research, time-sensitive, established territory. Light bypasses the Fusion panel -- single model, sequential perspectives. No human checkpoint. |
+| Mid | 6-8 | 6-8 | Ambitious research, cross-domain, echo chamber risk. Full Fusion panel per POV. |
+| Full | 8-10 | 8-10 | Pillar research, academic depth, definitive reports. Full Fusion panel per POV plus human practitioner checkpoint (Phase 2.5). |
 
 ## Implementation Notes
 
