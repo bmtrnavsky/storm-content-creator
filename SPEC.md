@@ -14,7 +14,7 @@ Phase 5: Moderator Pass (audit for source bias and false connections -- highest-
 
 ## Two Modes
 
-**STORM-Full (Multi-Model):** 8 independent research perspectives in parallel, each anchored to its own model instance. For pillar-level content, ambitious claims, cross-domain synthesis. Higher token cost.
+**STORM-Full (Multi-Model):** research perspectives in parallel, each processed by the OpenRouter Fusion panel. For pillar-level content, ambitious claims, cross-domain synthesis. Higher token cost.
 
 **STORM-Light (Single-Model):** One model role-plays all perspectives sequentially. For routine posts, time-sensitive pieces. Faster, cheaper.
 
@@ -22,7 +22,7 @@ Phase 5: Moderator Pass (audit for source bias and false connections -- highest-
 
 Fast model: perspective discovery, interviews (Light mode), polish
 Strong model: outline, writing, moderator
-Mixed models (2+): interviews (Full mode) -- diversity is the point
+Fusion panel (4 models): interviews (Full mode) -- 4-model diversity per POV
 
 ## Search Stack
 
