@@ -12,7 +12,7 @@ Instead of asking one LLM to write from a generic prompt, STORM discovers the di
 
 ## What Makes This Implementation Different -- Fusion Architecture
 
-Every published STORM implementation uses a single model per perspective. The "perspective diversity" comes from a persona prompt -- you ask one model to roleplay different viewpoints. The model's training biases, knowledge gaps, and reasoning patterns stay constant across every perspective. **Genuine disagreement between viewpoints is largely theatrical.**
+Most published STORM implementations use a single model per perspective. The "perspective diversity" comes from a persona prompt -- you ask one model to roleplay different viewpoints. The model's training biases, knowledge gaps, and reasoning patterns stay constant across every perspective. **Genuine disagreement between viewpoints is largely theatrical.**
 
 This implementation uses **OpenRouter Fusion** to run 4 genuinely different models per perspective:
 
@@ -41,7 +41,7 @@ Standard STORM relies purely on simulated experts. We added a mandatory practiti
 
 If a claim cannot be backed by a source or the human's lived experience, it gets cut. Reality beats theory.
 
-No published STORM implementation replaces the simulated expert with a real human practitioner. This is the differentiator.
+No published STORM implementation we are aware of replaces the simulated expert with a real human practitioner. This is the differentiator.
 
 ### Phase 3: Curate and Outline
 Organize interview logs into a clean hierarchical outline. Sections grouped by theme, duplicates removed, contradictions explicitly flagged. Every section mapped to specific sources.
@@ -68,6 +68,21 @@ cd storm-fusion-research-pipeline
 ```
 
 Designed to run via any agent framework supporting OpenRouter's API with tool use and web search enabled. See SKILL.md for the full pipeline implementation.
+
+## Install as an Agent Skill
+
+This repo is structured as an Agent Skills-compatible skill. Drop it into your agent's skills directory:
+
+**For Hermes:**
+```bash
+mkdir -p ~/.hermes/skills
+git clone https://github.com/bmtrnavsky/storm-fusion-research-pipeline.git ~/.hermes/skills/storm-fusion-research
+```
+
+**For other Agent Skills-compatible agents:**
+Copy this repo's contents into your agent's skills directory under a folder named `storm-fusion-research`, and ensure your agent loads `SKILL.md` files with YAML frontmatter on startup.
+
+Once installed, simply ask your agent: *"Run STORM research on [your topic]."*
 
 ## Model Configuration
 
