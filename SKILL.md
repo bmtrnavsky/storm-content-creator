@@ -85,7 +85,7 @@ Perspective [N]: [Persona Name]
 
 **STORM-Light process:** One model simulates all perspectives sequentially. Ground each persona in real web search. Capture sources per claim.
 
-**STORM-Full process:** Dispatch 8 independent research runs in parallel. Each run owns ONE perspective and its own model instance (mix at least 2 different models across the 8 runs -- do not use the same model for all). Each run outputs a structured report with cited sources.
+**STORM-Full process:** Dispatch 8 independent research runs in parallel. Each run owns ONE perspective. Query the OpenRouter Fusion endpoint for each perspective. The Fusion API will automatically fan the prompt out to the 4-model panel and return the DeepSeek synthesized report. Do not attempt to manually route to individual models in Phase 2.
 
 **Process for each perspective:**
 1. Search prior knowledge first: "what has the human already written/thought about [concept]"
