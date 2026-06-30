@@ -44,4 +44,4 @@ MIT
 Based on STORM by Shao et al., Stanford Oval Lab, NAACL 2024.
 Co-STORM collaborative extension, EMNLP 2024.
 Reference implementation: github.com/stanford-oval/storm
-Adaptation: github.com/bmtrnavsky/storm-content-creator
+Adaptation: github.com/bmtrnavsky/storm-fusion-research-pipeline
