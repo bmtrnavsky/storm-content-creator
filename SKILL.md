@@ -212,13 +212,13 @@ Both are explicitly flagged in the Co-STORM paper and must be named checks in Ph
 | Pipeline Stage | Light Mode | Full Mode | Rationale |
 |----------------|-----------|-----------|-----------|
 | Phase 1: Perspective Discovery | Fast model | Fast model | Structured output, speed |
-| Phase 2: Simulated Interview | Fast model (single, sequential) | Fusion panel (4 models fused by DeepSeek V4 Flash) | Light: speed. Full: 4-model diversity per POV |
+| Phase 2: Simulated Interview | Fast model (single, sequential) | OpenRouter Fusion panel | Light: speed. Full: 4-model diversity per POV |
 | Phase 3: Curate and Outline | Strong model | Strong model | Structured, reliable |
 | Phase 4: Grounded Writing | Strong model | Strong model | Voice matching for hand-edit |
 | Phase 5: Moderator/Auditor | Strong model | Strong model | Highest-leverage role |
 | Final Polish | Fast model | Fast model | Mechanical task; speed only |
 
-**Full mode Fusion routing:** Query the OpenRouter Fusion endpoint for each perspective. The API handles model selection and synthesis server-side. Do not attempt to manually route to individual models.
+
 
 **Fallback:** If the strong model hits a reasoning ceiling on the moderator role, escalate to a stronger model. Do not escalate as a reflex.
 
