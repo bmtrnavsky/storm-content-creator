@@ -1,4 +1,4 @@
-# STORM Content Creator
+# STORM Fusion Research Pipeline
 
 A practitioner-built implementation of Stanford's STORM methodology using OpenRouter Fusion to research topics with 4 parallel AI models per perspective.
 
