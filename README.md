@@ -70,11 +70,11 @@ Run the pipeline through Hermes Agent with the `content-pipeline` skill loaded.
 | Phase 3: Curate and Outline | Owl Alpha | Frontier tier, structured output, reliability |
 | Phase 4: Grounded Writing | Owl Alpha | Frontier tier, voice consistency for researcher's final review |
 | Phase 5: Moderator/Auditor | Owl Alpha | Highest-leverage role; needs frontier reasoning strength |
-| Final Polish | Gemini 2.5 Flash Lite | Mechanical task; speed only |
+| Final Polish | DeepSeek V4 Flash | Mechanical task; speed only |
 
 ### Model Hierarchy (strongest to weakest)
 
-Owl Alpha (frontier) > DeepSeek V4 Flash > Nemotron 3 Ultra (free MoE) > gpt-oss-120b (free) > Gemma 4 31B (free) > Gemini 2.5 Flash > Gemini 2.5 Flash Lite
+Owl Alpha (frontier) > DeepSeek V4 Flash > Nemotron 3 Ultra (free MoE) > gpt-oss-120b (free) > Gemma 4 31B (free)
 
 ### Fusion Panel per POV
 
