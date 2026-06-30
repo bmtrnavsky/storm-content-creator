@@ -37,11 +37,11 @@ Each POV is researched by 4 models simultaneously, fused into one report by Deep
 
 ### Phase 2.5: The Reality Check (Human in the Loop)
 
-Standard STORM relies purely on simulated experts. We added a mandatory practitioner checkpoint. Once the Fusion panel synthesizes the data, the AI interviews a human expert: "Research says X. From your experience in this domain, does this track? What is missing?"
+Standard STORM relies purely on simulated experts. We added a mandatory practitioner checkpoint **after** the Fusion panel synthesizes findings and **before** curation drives writing. The AI interviews a human expert: "Research says X. From your experience in this domain, does this track? What is missing?"
 
 If a claim cannot be backed by a source or the human's lived experience, it gets cut. Reality beats theory.
 
-No published STORM implementation we are aware of replaces the simulated expert with a real human practitioner. This is the differentiator.
+**Novelty claim, accurately bounded:** Co-STORM (EMNLP 2024) is a published human-in-the-loop STORM variant — but its human participates **during** the interview/discourse phase to steer questions as they happen. This pipeline's human validates **conclusions after synthesis and before curation**. Those are different stages with different jobs. No published STORM variant we are aware of includes a post-synthesis, pre-curation human validation checkpoint.
 
 ### Phase 3: Curate and Outline
 Organize interview logs into a clean hierarchical outline. Sections grouped by theme, duplicates removed, contradictions explicitly flagged. Every section mapped to specific sources.
