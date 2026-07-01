@@ -8,7 +8,7 @@
 
 ## Core Insight
 
-Direct prompting produces shallow, single-perspective questions. STORM solves this by mimicking an investigative journalist: discover multiple perspectives, interview experts, ground every claim in retrievable sources.
+Direct prompting produces shallow, single-perspective questions. STORM solves this by mimicking an investigative journalist: discover multiple perspectives, interview experts, ground every claim in re...
 
 ## The Five-Phase Pipeline
 
@@ -46,7 +46,7 @@ Every POV is researched by 4 models simultaneously, fused into one report:
 ```
 
 - **Fuser model:** DeepSeek V4 Flash (DeepSeek V4 Flash) -- synthesizes all 4 analysis model outputs into one coherent POV report
-- **Analysis models:** Nemotron 3 Ultra (frontier MoE), gpt-oss-120b (STEM/math), Gemma 4 31B (general/multimodal), minimax-m2.5 (MiniMax)
+- **Analysis models:** Nemotron 3 Ultra (frontier MoE), gpt-oss-120b (STEM/math), Gemma 4 31B (general/multimodal), `minimax/minimax-m2.5:free` -- MiniMax (Diversity, MiniMax-backed)
 - **Cost:** Only the fuser prompt is charged (DeepSeek V4 Flash). All 4 analysis models run free tiers.
 - **Nemotron 3 Ultra** serves as both an analysis model here AND the Phase 5 moderator -- sequential stages, no conflict.
 
@@ -65,7 +65,7 @@ Every POV is researched by 4 models simultaneously, fused into one report:
 3. Dispatch N independent delegate_task subagents (batches of 3 respecting max_concurrent_children). Each subagent owns ONE POV and includes the full Fusion config in its prompt.
 4. Each subagent outputs a structured report with cited sources for its assigned POV. The Fusion plugin returns a single fused report -- no per-model reconciliation needed.
 5. Moderator (Nemotron 3 Ultra) collects all N reports.
-6. Researcher interview pass: moderator presents synthesized findings across all reports, highlighting agreements, disagreements, and unique angles. the researcher stress-tests disagreements, gaps, missing angles.
+6. Researcher interview pass: moderator presents synthesized findings across all reports, highlighting agreements, disagreements, and unique angles. the researcher stress-tests disagreements, gaps, mi...
 7. Moderator reconciles contradictions, flags unresolved claims as [VERIFY].
 
 **Cost comparison:**
@@ -79,7 +79,7 @@ Every POV is researched by 4 models simultaneously, fused into one report:
 Fusion delivers 2-4x the model diversity per POV at the same or lower dispatch count. The fuser cost (DeepSeek V4 Flash at $0.14/$0.28 per 1M) is negligible.
 
 - **Hard rule:** If a factual claim cannot be backed by a real source AND the researcher cannot confirm from experience, output "unverified" -- fabrication is strictly forbidden.
-- **Researcher modification novelty:** To our knowledge, no published work runs 4-model Fusion perspective interviews with cached source sharing + real human practitioner interview. This is a genuine contribution.
+- **Researcher modification novelty:** To our knowledge, no published work runs 4-model Fusion perspective interviews with cached source sharing + real human practitioner interview. This is a genu...
 
 #### Parallel Writing Pattern (all tiers)
 
@@ -99,14 +99,14 @@ Draft the full post while subagent interviews run in background. Revise after al
 - **Task:** Write post section by section following the outline exactly, plus expert interview insights
 - **Constraint:** Every claim points back to a collected source
 - **Hard rule:** If a section is thin on data, write "needs more research" instead of padding
-- **Banned phrases:** No em-dashes. No hollow adjectives ("groundbreaking," "revolutionary," "game-changing," "transformative"). No "delve," "dive deep," "unpack," "demystify," "journey." No generic openers. No summary closings.
+- **Banned phrases:** No em-dashes. No hollow adjectives ("groundbreaking," "revolutionary," "game-changing," "transformative"). No "delve," "dive deep," "unpack," "demystify," "journey." No gene...
 - **Verification flags:** Use [VERIFY] for claims that cannot be backed by a real source AND the researcher cannot confirm
 
 ### Phase 5: Co-STORM Moderator Pass
 
 - **Role:** Independent Moderator / Auditor
 - **Task:** Blind spot sweep for unknown unknowns -- critical questions no one thought to ask
-- **Why this is the highest-leverage role:** Co-STORM evaluation found that removing the moderator hurts performance more than reducing the number of experts. Single expert + moderator > multiple experts without moderator.
+- **Why this is the highest-leverage role:** Co-STORM evaluation found that removing the moderator hurts performance more than reducing the number of experts. Single expert + moderator > multiple expe...
 - **Red-team constraints:** Audit for two named failure modes:
   1. **Source bias transfer:** Leaning too heavily on a single biased source
   2. **Over-association of unrelated facts:** Creating red herrings by connecting facts that are not actually related
@@ -133,7 +133,7 @@ Key finding: Removing the moderator hurts performance more than reducing the num
 | Pipeline Stage | Model | Rationale |
 |----------------|-------|-----------|
 | Phase 1: Perspective Discovery | Nemotron 3 Ultra 550B | Frontier reasoning, structured research output |
-| Phase 2: Expert Interview (all tiers) | Fusion: 4 models (Nemotron 3 Ultra + gpt-oss-120b + Gemma 4 31B + minimax-m2.5) fused by DeepSeek V4 Flash | 4-model diversity per POV, single fuser cost |
+| Phase 2: Expert Interview (all tiers) | Fusion: 4 models (Nemotron 3 Ultra + gpt-oss-120b + Gemma 4 31B + minimax/minimax-m2.5:free) fused by DeepSeek V4 Flash | 4-model diversity per POV, single fuser cost |
 | Phase 3: Curate and Outline | Nemotron 3 Ultra 550B | Frontier tier, structured output, reliability |
 | Phase 4: Grounded Writing | Nemotron 3 Ultra 550B | Frontier tier, voice matching for researcher's final review |
 | Phase 5: Moderator/Auditor | Nemotron 3 Ultra 550B | Highest-leverage role; needs frontier reasoning strength |
@@ -143,15 +143,15 @@ Key finding: Removing the moderator hurts performance more than reducing the num
 - `nvidia/nemotron-3-ultra-550b-a55b:free` -- frontier MoE reasoning (55B active of 550B)
 - `openai/gpt-oss-120b:free` -- STEM, math, coding strength
 - `google/gemma-4-31b-it:free` -- general, multimodal, Google-backed
-- `MiniMax/minimax-m2.5-free` -- MiniMax Diversity
+- `minimax/minimax-m2.5:free` -- MiniMax (Diversity, MiniMax-backed)
 - **Fuser:** `deepseek/deepseek-v4-flash` -- synthesizes all 4 into one report
 
-**Model hierarchy (strongest to weakest):** Nemotron 3 Ultra (frontier workhorse) > DeepSeek V4 Flash (fuser) > minimax-m2.5, gpt-oss-120b, Gemma 4 31B (fusion panel, parity)
+**Model hierarchy (strongest to weakest):** Nemotron 3 Ultra (frontier workhorse) > DeepSeek V4 Flash (fuser) > `minimax/minimax-m2.5:free`, gpt-oss-120b, Gemma 4 31B (fusion panel, parity)
 
 **Fallback chain (matches config.yaml fallback_chain):**
 1. Nemotron 3 Ultra 550B (primary -- strongest free model, frontier workhorse)
 2. Nemotron 3 Super 120B (free -- stable, strong tool caller)
-3. minimax-m2.5 (free -- MiniMax)
+3. `minimax/minimax-m2.5:free` -- MiniMax (Diversity)
 4. DeepSeek V4 Flash (paid -- last resort safety net)
 
 If Nemotron 3 Ultra is unavailable (rate limit, outage), the fallback chain automatically promotes the next model. Do not escalate as a reflex.
@@ -162,16 +162,16 @@ If Nemotron 3 Ultra is unavailable (rate limit, outage), the fallback chain auto
 
 ### Why Fusion Changes the Nature of STORM
 
-Standard STORM uses a single model per POV. The "perspective diversity" comes entirely from the persona prompt -- you're asking one model to roleplay different viewpoints. The model's training biases, knowledge gaps, and reasoning patterns are constant across every perspective. Genuine disagreement between POVs is largely theatrical.
+Standard STORM uses a single model per POV. The "perspective diversity" comes entirely from the persona prompt -- you're asking one model to roleplay different viewpoints. The model's training bi...
 
 With Fusion, each POV is researched by four models with genuinely different architectures, training data, companies, and knowledge biases:
 
-- **minimax-m2.5** (MiniMax)
+- `minimax/minimax-m2.5:free` -- MiniMax (Diversity, MiniMax-backed)
 - **Nemotron 3 Ultra 550B** (NVIDIA/US agentic, MoE architecture)
 - **gpt-oss-120b** (OpenAI/RLHF, STEM/math strength)
 - **Gemma 4 31B** (Google/DeepMind, general/multimodal)
 
-When the DeepSeek Flash judge surfaces disagreements between panel models, those are **real disagreements** rooted in different training, not one model arguing with itself. The moderator in Phase 3 is reconciling genuine intellectual diversity, not synthetic persona variation.
+When the DeepSeek Flash judge surfaces disagreements between panel models, those are **real disagreements** rooted in different training, not one model arguing with itself. The moderator in Phase...
 
 ### The Compounding Effect
 
@@ -181,19 +181,19 @@ persona diversity -> question diversity -> single-model answers -> moderator syn
 **Fusion STORM pipeline:**
 persona diversity -> question diversity -> 4-model panel answers -> judge pre-synthesizes per POV -> moderator synthesizes already-rich outputs
 
-The moderator receives pre-fused intelligence, not raw single-model takes. It's working with a higher quality input at every step. Each phase compounds the one before it -- the panel feeds the judge, the judge feeds the moderator, the moderator feeds the writer. Quality at the top of the funnel cascades down.
+The moderator receives pre-fused intelligence, not raw single-model takes. It's working with a higher quality input at every step. Each phase compounds the one before it -- the panel feeds the ju...
 
 ### Why the Judge Matters More Than the Panel
 
-Per OpenRouter's own research, approximately 75% of Fusion's quality lift comes from the synthesis step, not model diversity. The judge's structured output -- consensus, contradictions, gaps, unique insights -- is what makes the POV report richer than any single model could produce.
+Per OpenRouter's own research, approximately 75% of Fusion's quality lift comes from the synthesis step, not model diversity. The judge's structured output -- consensus, contradictions, gaps, uni[...]
 
 Panel diversity supplies the raw material. The judge does the actual intellectual work.
 
-This means the architecture is not "more models = better." It's "more models feeding a synthesizer = better." The synthesizer quality is the bottleneck. That's why DeepSeek V4 Flash (DeepSeek V4 Flash, the strongest reasoner in the stack) is the fuser, not a cheaper model.
+This means the architecture is not "more models = better." It's "more models feeding a synthesizer = better." The synthesizer quality is the bottleneck. That's why DeepSeek V4 Flash (DeepSeek V4 ...
 
 ### Why This Is Novel
 
-No published STORM implementation runs multi-model Fusion at the POV level. The Stanford paper and all known implementations use single models per perspective. This architecture -- 4-model free panel + cheap judge + human moderator across N perspectives -- achieves near-frontier research quality at near-zero cost.
+No published STORM implementation runs multi-model Fusion at the POV level. The Stanford paper and all known implementations use single models per perspective. This architecture -- 4-model free p...
 
 This is This implementation's original contribution to the STORM methodology. Document it as such.
 
@@ -208,7 +208,7 @@ Cost is no longer a reason to limit POV count. The only constraint is how many g
 | 2 models per POV (costly) | 4 models per POV (free) |
 | Trade depth for cost | Depth is the default |
 
-The Fusion panel cost is only the fuser prompt (DeepSeek V4 Flash at $0.14/$0.28 per 1M tokens). All four analysis models run free tiers. A Full run with 10 POVs costs approximately 10 fuser prompts -- still under $1.
+The Fusion panel cost is only the fuser prompt (DeepSeek V4 Flash at $0.14/$0.28 per 1M tokens). All four analysis models run free tiers. A Full run with 10 POVs costs approximately 10 fuser prom...
 
 ## Search Stack Detail
 
@@ -251,7 +251,7 @@ All tiers use the same Fusion panel (4 models per POV). The only variable is how
 
 **STORM-Mid (6-8 POVs, 6-8 sub-agent calls):** Ambitious research, cross-domain topics, or when single-model echo chamber is a risk. Good middle ground for important but not pillar content.
 
-**STORM-Full (8-10 POVs, 8-10 sub-agent calls):** Pillar research, deep academic problems, definitive guides, topics where genuine perspective diversity matters more than cost. Requires the researcher's time for Phase 2 interview and Phase 5 review. Reserve for content that justifies the depth.
+**STORM-Full (8-10 POVs, 8-10 sub-agent calls):** Pillar research, deep academic problems, definitive guides, topics where genuine perspective diversity matters more than cost. Requires the resea...
 
 **Decision criteria:**
 - Routine post, established territory -> Light (4-5 POV)
@@ -260,7 +260,7 @@ All tiers use the same Fusion panel (4 models per POV). The only variable is how
 - researcher available for interview checkpoints? -> Mid or Full. If not -> Light.
 - Budget concern? -> All tiers are nearly free (only fuser prompts cost anything). Scale up POV count without cost anxiety.
 
-**Cost is no longer a tier differentiator.** The Fusion fuser (DeepSeek V4 Flash) costs $0.14/$0.28 per 1M tokens. A Full run with 10 POVs costs ~10 fuser prompts -- still under $1. The analysis models are all free. Choose tier based on how many perspectives the topic deserves, not cost.
+**Cost is no longer a tier differentiator.** The Fusion fuser (DeepSeek V4 Flash) costs $0.14/$0.28 per 1M tokens. A Full run with 10 POVs costs ~10 fuser prompts -- still under $1. The analysis ...
 
 ## Pipeline Agent Mapping
 
