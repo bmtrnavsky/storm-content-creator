@@ -31,11 +31,11 @@ Every POV is researched by 4 models simultaneously, fused into one report:
 
 ```json
 {
-  "model": "openrouter/owl-alpha",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
   "plugins": [{
     "id": "fusion",
     "analysis_models": [
-      "openrouter/owl-alpha",
+      "nvidia/nemotron-3-ultra-550b-a55b:free",
       "nvidia/nemotron-3-ultra-550b-a55b:free",
       "openai/gpt-oss-120b:free",
       "google/gemma-4-31b-it:free"
@@ -46,9 +46,9 @@ Every POV is researched by 4 models simultaneously, fused into one report:
 ```
 
 - **Fuser model:** DeepSeek V4 Flash (DeepSeek V4 Flash) -- synthesizes all 4 analysis model outputs into one coherent POV report
-- **Analysis models:** Owl Alpha (reasoning), Nemotron 3 Ultra (frontier MoE), gpt-oss-120b (STEM/math), Gemma 4 31B (general/multimodal)
+- **Analysis models:** Nemotron 3 Ultra (frontier MoE), gpt-oss-120b (STEM/math), Gemma 4 31B (general/multimodal), GLM 4.5 Air (frontier reasoning, Zhipu AI)
 - **Cost:** Only the fuser prompt is charged (DeepSeek V4 Flash). All 4 analysis models run free tiers.
-- **Owl Alpha** serves as both an analysis model here AND the Phase 5 moderator -- sequential stages, no conflict.
+- **Nemotron 3 Ultra** serves as both an analysis model here AND the Phase 5 moderator -- sequential stages, no conflict.
 
 #### Tier Selection (POV count only)
 
@@ -64,7 +64,7 @@ Every POV is researched by 4 models simultaneously, fused into one report:
 2. **Single search pass per POV** (cost efficiency): For each perspective, run web_search + web_extract (Firecrawl) + Perplexity ONCE. Cache the retrieved sources.
 3. Dispatch N independent delegate_task subagents (batches of 3 respecting max_concurrent_children). Each subagent owns ONE POV and includes the full Fusion config in its prompt.
 4. Each subagent outputs a structured report with cited sources for its assigned POV. The Fusion plugin returns a single fused report -- no per-model reconciliation needed.
-5. Moderator (Owl Alpha) collects all N reports.
+5. Moderator (Nemotron 3 Ultra) collects all N reports.
 6. Researcher interview pass: moderator presents synthesized findings across all reports, highlighting agreements, disagreements, and unique angles. the researcher stress-tests disagreements, gaps, missing angles.
 7. Moderator reconciles contradictions, flags unresolved claims as [VERIFY].
 
@@ -132,29 +132,29 @@ Key finding: Removing the moderator hurts performance more than reducing the num
 
 | Pipeline Stage | Model | Rationale |
 |----------------|-------|-----------|
-| Phase 1: Perspective Discovery | Owl Alpha | Frontier reasoning, structured research output |
-| Phase 2: Expert Interview (all tiers) | Fusion: 4 models (Owl Alpha + Nemotron 3 Ultra + gpt-oss-120b + Gemma 4 31B) fused by DeepSeek V4 Flash | 4-model diversity per POV, single fuser cost |
-| Phase 3: Curate and Outline | Owl Alpha | Frontier tier, structured output, reliability |
-| Phase 4: Grounded Writing | Owl Alpha | Frontier tier, voice matching for researcher's final review |
-| Phase 5: Moderator/Auditor | Owl Alpha | Highest-leverage role; needs frontier reasoning strength |
-| Final Polish | Owl Alpha | Final review pass before researcher delivery |
+| Phase 1: Perspective Discovery | Nemotron 3 Ultra 550B | Frontier reasoning, structured research output |
+| Phase 2: Expert Interview (all tiers) | Fusion: 4 models (Nemotron 3 Ultra + gpt-oss-120b + Gemma 4 31B + GLM 4.5 Air) fused by DeepSeek V4 Flash | 4-model diversity per POV, single fuser cost |
+| Phase 3: Curate and Outline | Nemotron 3 Ultra 550B | Frontier tier, structured output, reliability |
+| Phase 4: Grounded Writing | Nemotron 3 Ultra 550B | Frontier tier, voice matching for researcher's final review |
+| Phase 5: Moderator/Auditor | Nemotron 3 Ultra 550B | Highest-leverage role; needs frontier reasoning strength |
+| Final Polish | Nemotron 3 Ultra 550B | Final review pass before researcher delivery |
 
 **Fusion panel per POV:**
-- `openrouter/owl-alpha` -- frontier reasoning
 - `nvidia/nemotron-3-ultra-550b-a55b:free` -- frontier MoE reasoning (55B active of 550B)
 - `openai/gpt-oss-120b:free` -- STEM, math, coding strength
 - `google/gemma-4-31b-it:free` -- general, multimodal, Google-backed
+- `z-ai/glm-4.5-air:free` -- frontier reasoning, Zhipu AI
 - **Fuser:** `deepseek/deepseek-v4-flash` -- synthesizes all 4 into one report
 
-**Model hierarchy (strongest to weakest):** Owl Alpha (frontier) > DeepSeek V4 Flash (DeepSeek 4 Flash) > Nemotron 3 Ultra (free MoE) > gpt-oss-120b (free) > Gemma 4 31B (free) > DeepSeek V4 Flash > DeepSeek V4 Flash (Flash Lite)
+**Model hierarchy (strongest to weakest):** Nemotron 3 Ultra (frontier workhorse) > DeepSeek V4 Flash (fuser) > GLM 4.5 Air, gpt-oss-120b, Gemma 4 31B (fusion panel, parity)
 
 **Fallback chain (matches config.yaml fallback_chain):**
-1. Owl Alpha (primary -- strongest model, no escalation above it)
-2. Nemotron 3 Ultra 550B (free -- frontier MoE, second strongest)
-3. Nemotron 3 Super 120B (free -- stable, strong tool caller)
+1. Nemotron 3 Ultra 550B (primary -- strongest free model, frontier workhorse)
+2. Nemotron 3 Super 120B (free -- stable, strong tool caller)
+3. GLM 4.5 Air (free -- frontier reasoning, Zhipu AI)
 4. DeepSeek V4 Flash (paid -- last resort safety net)
 
-If Owl Alpha is unavailable (rate limit, outage), the fallback chain automatically promotes the next model. Do not escalate as a reflex.
+If Nemotron 3 Ultra is unavailable (rate limit, outage), the fallback chain automatically promotes the next model. Do not escalate as a reflex.
 
 **Parallel subagent batching:** max_concurrent_children=3. Dispatch interviews in batches of 3. Draft post in parallel while interviews run.
 
@@ -166,7 +166,7 @@ Standard STORM uses a single model per POV. The "perspective diversity" comes en
 
 With Fusion, each POV is researched by four models with genuinely different architectures, training data, companies, and knowledge biases:
 
-- **Owl Alpha** (OpenRouter/frontier reasoning)
+- **GLM 4.5 Air** (Zhipu AI/frontier reasoning)
 - **Nemotron 3 Ultra 550B** (NVIDIA/US agentic, MoE architecture)
 - **gpt-oss-120b** (OpenAI/RLHF, STEM/math strength)
 - **Gemma 4 31B** (Google/DeepMind, general/multimodal)
