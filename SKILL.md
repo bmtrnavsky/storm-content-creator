@@ -225,14 +225,24 @@ Both are explicitly flagged in the Co-STORM paper and must be named checks in Ph
 
 | Pipeline Stage | Light Mode | Full Mode | Rationale |
 |----------------|-----------|-----------|-----------|
-| Phase 1: Perspective Discovery | Fast model | Fast model | Structured output, speed |
-| Phase 2: Simulated Interview | Fast model (single, sequential) | OpenRouter Fusion panel | Light: speed. Full: 4-model diversity per POV |
-| Phase 3: Curate and Outline | Strong model | Strong model | Structured, reliable |
-| Phase 4: Grounded Writing | Strong model | Strong model | Voice matching for hand-edit |
-| Phase 5: Moderator/Auditor | Strong model | Strong model | Highest-leverage role |
-| Final Polish | Fast model | Fast model | Mechanical task; speed only |
+| Phase 1: Perspective Discovery | nemotron-3-ultra-550b:free | nemotron-3-ultra-550b:free | Strongest free orchestrator, built for agentic workflows |
+| Phase 2: Simulated Interview | nemotron-3-ultra-550b:free (single, sequential) | OpenRouter Fusion panel (see below) | Light: speed. Full: 4-model diversity per POV |
+| Phase 3: Curate and Outline | nemotron-3-ultra-550b:free | nemotron-3-ultra-550b:free | Structured, reliable |
+| Phase 4: Grounded Writing | nemotron-3-ultra-550b:free | nemotron-3-ultra-550b:free | Voice consistency for researcher's final review |
+| Phase 5: Moderator/Auditor | nemotron-3-ultra-550b:free | nemotron-3-ultra-550b:free | Highest-leverage role; needs frontier reasoning strength |
+| Final Polish | deepseek-v4-flash | deepseek-v4-flash | Fast, precise cleanup at temperature zero -- won't go rogue on prose |
 
+### Fusion Panel (Full Mode, Phase 2)
 
+- `nvidia/nemotron-3-ultra-550b-a55b:free` -- NVIDIA MoE, US agentic RL training
+- `openai/gpt-oss-120b:free` -- OpenAI RLHF, STEM/math strength
+- `google/gemma-4-31b-it:free` -- Google DeepMind, factual grounding, math, multimodal
+- `minimax/minimax-m2.5:free` -- MiniMax (Shanghai), distinct Chinese lab lineage
+- **Fuser:** `deepseek/deepseek-v4-flash` -- synthesizes all 4 into one report
+
+Four genuinely different training lineages, four different blind spots. The diversity is the intelligence.
+
+**Fallback chain:** nemotron-3-ultra-550b:free → nemotron-3-super-120b:free → deepseek-v4-flash
 
 **Fallback:** If the strong model hits a reasoning ceiling on the moderator role, escalate to a stronger model. Do not escalate as a reflex.
 
@@ -266,3 +276,4 @@ This skill is limited to research, synthesis, source tracking, and report writin
 Based on STORM by Shao et al., Stanford Oval Lab, NAACL 2024.
 Co-STORM collaborative extension, EMNLP 2024.
 Reference implementation: github.com/stanford-oval/storm
+
